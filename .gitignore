@@ -1,0 +1,11 @@
+# Ignore raw data
+*.zip
+*.csv
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Environment
+.venv/
+.env
