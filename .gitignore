@@ -8,5 +8,6 @@ outputs/charts/
 __pycache__/
 *.pyc
 
+# Environment
 .venv/
 .env
