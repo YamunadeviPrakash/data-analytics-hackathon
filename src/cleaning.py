@@ -12,6 +12,7 @@ def clean_dataset(input_file, output_file):
 
     file_path = os.path.join(INPUT_PATH, input_file)
     df = pd.read_csv(file_path)
+    df = normalize_state_names(df)
 
     df.columns = df.columns.str.strip().str.lower().str.replace(" ", "_")
 
@@ -34,6 +35,74 @@ def clean_dataset(input_file, output_file):
 
     print(f"Saved cleaned file → {output_file_path}")
     print(f"Final shape: {df.shape}")
+
+def normalize_state_names(df):
+    
+    # Remove numeric or invalid state entries
+    df = df[df["state"].astype(str).str.contains(r"[a-zA-Z]", regex=True)]
+
+    # Basic text normalization
+    df["state"] = (
+        df["state"]
+        .str.lower()
+        .str.strip()
+        .str.replace("&", "and")
+        .str.replace(r"\s+", " ", regex=True)
+    )
+
+    # Canonical mapping
+    state_mapping = {
+    # Jammu & Kashmir
+    "jammu and kashmir": "Jammu and Kashmir",
+    "jammu kashmir": "Jammu and Kashmir",
+
+    # Dadra & Nagar Haveli and Daman & Diu
+    "the dadra and nagar haveli and daman and diu": "Dadra And Nagar Haveli And Daman And Diu",
+    "dadra and nagar haveli and daman and diu": "Dadra And Nagar Haveli And Daman And Diu",
+    "daman and diu": "Dadra And Nagar Haveli And Daman And Diu",
+    "damman and diu": "Dadra And Nagar Haveli And Daman And Diu",
+    "dadra and nagar haveli": "Dadra And Nagar Haveli And Daman And Diu",
+
+    # West Bengal (CRITICAL FIX)
+    "west bengal": "West Bengal",
+    "west bangal": "West Bengal",
+    "westbengal": "West Bengal",
+    "w bengal": "West Bengal",
+    "w. bengal": "West Bengal",
+    "wb": "West Bengal",
+
+    # Odisha
+    "orissa": "Odisha",
+
+    # Puducherry
+    "pondicherry": "Puducherry",
+
+    # Telangana
+    "telengana": "Telangana"
+    }
+
+    
+
+    df["state"] = df["state"].replace(state_mapping)
+
+    # Capitalize properly
+    df["state"] = df["state"].str.title()
+
+    # FINAL hard normalization
+    df["state"] = (
+    df["state"]
+    .str.lower()
+    .str.replace("&", "and")
+    .str.replace(r"\s+", " ", regex=True)
+    .str.strip()
+    )
+
+    df["state"] = df["state"].replace(state_mapping)
+    df["state"] = df["state"].str.title()
+
+
+    return df
+
 
 
 if __name__ == "__main__":

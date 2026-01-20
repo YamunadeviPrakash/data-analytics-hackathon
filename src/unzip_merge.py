@@ -48,4 +48,4 @@ if __name__ == "__main__":
         "aadhaar_enrolment_merged.csv"
     )
 
-    print("\n✅ All datasets merged successfully")
+    print("\nMerged all datasets")

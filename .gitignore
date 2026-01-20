@@ -1,11 +1,12 @@
-# Ignore raw data
+# raw data
 *.zip
 *.csv
 
-# Python cache
+# charts
+outputs/charts/
+
 __pycache__/
 *.pyc
 
-# Environment
 .venv/
 .env
