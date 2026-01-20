@@ -2,15 +2,12 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 
-# -------------------------------------------------
-# Page setup
-# -------------------------------------------------
 st.set_page_config(
     page_title="Aadhaar Enrollment Gap Analysis",
     layout="wide"
 )
 
-st.title("🆔 Aadhaar Enrollment & Update Gap Analysis")
+st.title(" Aadhaar Enrollment & Update Gap Analysis")
 st.markdown(
     """
     **Problem Statement:**  
@@ -18,14 +15,8 @@ st.markdown(
     """
 )
 
-# -------------------------------------------------
-# Load data
-# -------------------------------------------------
 district_df = pd.read_csv("outputs/reports/eda_district_level.csv")
 
-# -------------------------------------------------
-# Sidebar Filter (WORKING & FINAL)
-# -------------------------------------------------
 st.sidebar.header("🔎 Filter")
 
 states = (
@@ -42,18 +33,12 @@ selected_state = st.sidebar.selectbox(
     options=["All"] + states
 )
 
-# -------------------------------------------------
-# Filtered dataframe (SINGLE SOURCE OF TRUTH)
-# -------------------------------------------------
 if selected_state == "All":
     filtered_df = district_df.copy()
 else:
     filtered_df = district_df[district_df["state"] == selected_state]
 
-# -------------------------------------------------
-# KPI Section (FIXED)
-# -------------------------------------------------
-st.subheader("📌 Key Indicators")
+st.subheader(" Key Indicators")
 
 c1, c2, c3 = st.columns(3)
 
@@ -74,10 +59,7 @@ c3.metric(
 
 st.divider()
 
-# =================================================
-# 1️⃣ PIE — UPDATE COMPOSITION (FIXED)
-# =================================================
-st.subheader("🟠 Update Composition (Child Age Group)")
+st.subheader(" Update Composition (Child Age Group)")
 
 update_pie_df = pd.DataFrame({
     "Type": ["Demographic Updates", "Biometric Updates"],
@@ -99,10 +81,7 @@ st.plotly_chart(fig_pie, use_container_width=True)
 
 st.divider()
 
-# =================================================
-# 2️⃣ BAR — TOP UPDATE GAPS (FIXED)
-# =================================================
-st.subheader("📊 Districts with Highest Child Update Gap")
+st.subheader(" Districts with Highest Child Update Gap")
 
 top_gap = (
     filtered_df
@@ -132,10 +111,7 @@ st.caption(
 
 st.divider()
 
-# =================================================
-# 3️⃣ HEATMAP — GAP INTENSITY (FIXED)
-# =================================================
-st.subheader("🔥 District-Level Gap Intensity Heatmap")
+st.subheader(" District-Level Gap Intensity Heatmap")
 
 heatmap_df = filtered_df.pivot_table(
     index="district",
@@ -155,10 +131,7 @@ st.plotly_chart(fig_heatmap, use_container_width=True)
 
 st.divider()
 
-# =================================================
-# 4️⃣ TREEMAP — UPDATE ACTIVITY CONTRIBUTION (FIXED)
-# =================================================
-st.subheader("🌳 Treemap: Aadhaar Update Activity Contribution")
+st.subheader(" Treemap: Aadhaar Update Activity Contribution")
 
 filtered_df = filtered_df.copy()
 filtered_df["total_updates"] = (
@@ -183,10 +156,7 @@ else:
 
 st.divider()
 
-# =================================================
-# 5️⃣ STACKED BAR — AGE COMPARISON (FIXED)
-# =================================================
-st.subheader("📈 Enrollment by Age Group")
+st.subheader("Enrollment by Age Group")
 
 age_df = filtered_df.groupby("state", as_index=False).agg(
     child_enrollment=("age_5_17", "sum"),
@@ -211,11 +181,8 @@ fig_stack = px.bar(
 
 st.plotly_chart(fig_stack, use_container_width=True)
 
-# -------------------------------------------------
-# Final Insight
-# -------------------------------------------------
 st.success(
-    "📌 Key Insight: Regions with high update-heavy patterns indicate "
+    " Key Insight: Regions with high update-heavy patterns indicate "
     "greater Aadhaar lifecycle maintenance burden, especially during "
     "child-to-adult transitions."
 )
